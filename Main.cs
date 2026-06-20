@@ -6,19 +6,16 @@ namespace tabsik12.TimeDateSplit
     {
         private TimeDateSplitPlugin _timeDateSplitPlugin;
 
-        public override string DisplayName => "Time & Date Split";
-        public override string Description =>
-            "Rozbija aktualny czas i datę na osobne zmienne (dzień, miesiąc, rok, godzina, minuta, sekunda, nazwy PL/EN, migający dwukropek).";
+        public Main()
+        {
+            // Dane opisowe bierzemy z ExtensionManifest.json,
+            // więc nie nadpisujemy tu Name/Author/itp.
+        }
 
         public override void Enable()
         {
             _timeDateSplitPlugin = new TimeDateSplitPlugin(this);
             _timeDateSplitPlugin.Enable();
-        }
-
-        public override void Disable()
-        {
-            _timeDateSplitPlugin?.Dispose();
         }
 
         public override void OpenConfigurator()
