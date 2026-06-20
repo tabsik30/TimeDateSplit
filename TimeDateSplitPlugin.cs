@@ -9,7 +9,7 @@ namespace tabsik12.TimeDateSplit
     public class TimeDateSplitPlugin : IDisposable
     {
         private readonly Main _plugin;
-        private System.Threading.Timer _timer;
+        private System.Threading.Timer? _timer;
         private bool _colonVisible = true;
         private CultureInfo _culture = new("pl-PL");
 
@@ -22,18 +22,10 @@ namespace tabsik12.TimeDateSplit
         {
             LoadCultureFromConfig();
 
-            VariableManager.Register(new Variable("date_day", "Dzień", VariableType.String, _plugin));
-            VariableManager.Register(new Variable("date_month", "Miesiąc (numer)", VariableType.String, _plugin));
-            VariableManager.Register(new Variable("date_year", "Rok", VariableType.String, _plugin));
-            VariableManager.Register(new Variable("date_month_name", "Nazwa miesiąca", VariableType.String, _plugin));
-            VariableManager.Register(new Variable("date_weekday", "Dzień tygodnia", VariableType.String, _plugin));
+            // Nie musimy ręcznie rejestrować zmiennych – SetValue je utworzy,
+            // jeśli nie istnieją, zgodnie z aktualnym API Macro Deck.
 
-            VariableManager.Register(new Variable("time_hours", "Godzina", VariableType.String, _plugin));
-            VariableManager.Register(new Variable("time_minutes", "Minuta", VariableType.String, _plugin));
-            VariableManager.Register(new Variable("time_seconds", "Sekunda", VariableType.String, _plugin));
-            VariableManager.Register(new Variable("time_colon", "Dwukropek migający", VariableType.String, _plugin));
-
-            _timer = new System.Threading.Timer(UpdateTime, null, 0, 1000);
+            _timer = new System.Threading.Timer(UpdateTime!, null, 0, 1000);
         }
 
         public void LoadCultureFromConfig()
@@ -47,24 +39,24 @@ namespace tabsik12.TimeDateSplit
                 : new CultureInfo("en-US");
         }
 
-        private void UpdateTime(object state)
+        private void UpdateTime(object? state)
         {
             try
             {
                 var now = DateTime.Now;
 
-                VariableManager.SetValue("date_day", now.Day.ToString("00"), _plugin);
-                VariableManager.SetValue("date_month", now.Month.ToString("00"), _plugin);
-                VariableManager.SetValue("date_year", now.Year.ToString(), _plugin);
+                VariableManager.SetValue("date_day", now.Day.ToString("00"), VariableType.String, _plugin);
+                VariableManager.SetValue("date_month", now.Month.ToString("00"), VariableType.String, _plugin);
+                VariableManager.SetValue("date_year", now.Year.ToString(), VariableType.String, _plugin);
 
-                VariableManager.SetValue("date_month_name", now.ToString("MMMM", _culture), _plugin);
-                VariableManager.SetValue("date_weekday", now.ToString("dddd", _culture), _plugin);
+                VariableManager.SetValue("date_month_name", now.ToString("MMMM", _culture), VariableType.String, _plugin);
+                VariableManager.SetValue("date_weekday", now.ToString("dddd", _culture), VariableType.String, _plugin);
 
-                VariableManager.SetValue("time_hours", now.Hour.ToString("00"), _plugin);
-                VariableManager.SetValue("time_minutes", now.Minute.ToString("00"), _plugin);
-                VariableManager.SetValue("time_seconds", now.Second.ToString("00"), _plugin);
+                VariableManager.SetValue("time_hours", now.Hour.ToString("00"), VariableType.String, _plugin);
+                VariableManager.SetValue("time_minutes", now.Minute.ToString("00"), VariableType.String, _plugin);
+                VariableManager.SetValue("time_seconds", now.Second.ToString("00"), VariableType.String, _plugin);
 
-                VariableManager.SetValue("time_colon", _colonVisible ? ":" : " ", _plugin);
+                VariableManager.SetValue("time_colon", _colonVisible ? ":" : " ", VariableType.String, _plugin);
                 _colonVisible = !_colonVisible;
             }
             catch
