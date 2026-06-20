@@ -4,16 +4,16 @@ using System.Threading;
 using SuchByte.MacroDeck.Plugins;
 using SuchByte.MacroDeck.Variables;
 
-namespace MaciejKaczmarek.TimeDateSplit
+namespace tabsik12.TimeDateSplit
 {
     public class TimeDateSplitPlugin : IDisposable
     {
-        private readonly Plugin _plugin;
-        private Timer _timer;
+        private readonly Main _plugin;
+        private System.Threading.Timer _timer;
         private bool _colonVisible = true;
-        private CultureInfo _culture;
+        private CultureInfo _culture = new("pl-PL");
 
-        public TimeDateSplitPlugin(Plugin plugin)
+        public TimeDateSplitPlugin(Main plugin)
         {
             _plugin = plugin;
         }
@@ -22,7 +22,6 @@ namespace MaciejKaczmarek.TimeDateSplit
         {
             LoadCultureFromConfig();
 
-            // Definicja zmiennych
             VariableManager.Register(new Variable("date_day", "Dzień", VariableType.String, _plugin));
             VariableManager.Register(new Variable("date_month", "Miesiąc (numer)", VariableType.String, _plugin));
             VariableManager.Register(new Variable("date_year", "Rok", VariableType.String, _plugin));
@@ -34,16 +33,14 @@ namespace MaciejKaczmarek.TimeDateSplit
             VariableManager.Register(new Variable("time_seconds", "Sekunda", VariableType.String, _plugin));
             VariableManager.Register(new Variable("time_colon", "Dwukropek migający", VariableType.String, _plugin));
 
-            _timer = new Timer(UpdateTime, null, 0, 1000);
+            _timer = new System.Threading.Timer(UpdateTime, null, 0, 1000);
         }
 
         public void LoadCultureFromConfig()
         {
             var lang = PluginConfiguration.GetValue(_plugin, "language") as string;
             if (string.IsNullOrWhiteSpace(lang))
-            {
-                lang = "pl"; // domyślnie polski
-            }
+                lang = "pl";
 
             _culture = lang == "pl"
                 ? new CultureInfo("pl-PL")
@@ -72,7 +69,7 @@ namespace MaciejKaczmarek.TimeDateSplit
             }
             catch
             {
-                // ewentualnie logowanie, żeby nie uwalić timera
+                // opcjonalnie logowanie
             }
         }
 
