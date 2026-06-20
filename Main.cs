@@ -2,15 +2,13 @@ using SuchByte.MacroDeck.Plugins;
 
 namespace tabsik12.TimeDateSplit
 {
-    public class Plugin : MacroDeckPlugin
+    public class Main : MacroDeckPlugin
     {
         private TimeDateSplitPlugin _timeDateSplitPlugin;
 
-        public override string Name => "Time & Date Split";
-        public override string Author => "tabsik12";
-        public override string Description => "Rozbija aktualny czas i datę na osobne zmienne (dzień, miesiąc, rok, godzina, minuta, sekunda, nazwy PL/EN, migający dwukropek).";
-
-        public override bool CanConfigure => true;
+        public override string DisplayName => "Time & Date Split";
+        public override string Description =>
+            "Rozbija aktualny czas i datę na osobne zmienne (dzień, miesiąc, rok, godzina, minuta, sekunda, nazwy PL/EN, migający dwukropek).";
 
         public override void Enable()
         {
@@ -29,6 +27,11 @@ namespace tabsik12.TimeDateSplit
             {
                 configurator.ShowDialog();
             }
+        }
+
+        internal void ReloadCulture()
+        {
+            _timeDateSplitPlugin?.LoadCultureFromConfig();
         }
     }
 }
