@@ -3,14 +3,14 @@ using System.Drawing;
 using System.Windows.Forms;
 using SuchByte.MacroDeck.Plugins;
 
-namespace MaciejKaczmarek.TimeDateSplit
+namespace tabsik12.TimeDateSplit
 {
     public class TimeDateSplitConfigurator : Form
     {
-        private readonly Plugin _plugin;
+        private readonly Main _plugin;
         private ComboBox _cmbLanguage;
 
-        public TimeDateSplitConfigurator(Plugin plugin)
+        public TimeDateSplitConfigurator(Main plugin)
         {
             _plugin = plugin;
             InitializeComponent();
@@ -50,7 +50,7 @@ namespace MaciejKaczmarek.TimeDateSplit
                 Location = new Point(20, 100),
                 Width = 100
             };
-            btnSave.Click += (_, _) => SaveAndClose();
+            btnSave.Click += BtnSave_Click;
 
             var btnCancel = new Button
             {
@@ -58,7 +58,7 @@ namespace MaciejKaczmarek.TimeDateSplit
                 Location = new Point(200, 100),
                 Width = 100
             };
-            btnCancel.Click += (_, _) => Close();
+            btnCancel.Click += BtnCancel_Click;
 
             Controls.Add(lbl);
             Controls.Add(_cmbLanguage);
@@ -84,15 +84,17 @@ namespace MaciejKaczmarek.TimeDateSplit
             var langCode = _cmbLanguage.SelectedIndex == 1 ? "en" : "pl";
             PluginConfiguration.SetValue(_plugin, "language", langCode);
 
-            if (_plugin is Plugin concrete)
-            {
-                // Odśwież kulturę w działającym pluginie
-                concrete?.GetType()
-                    .GetField("_timeDateSplitPlugin", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?
-                    .GetValue(concrete) is TimeDateSplitPlugin logicInstance
-                    ?.LoadCultureFromConfig();
-            }
+            _plugin.ReloadCulture(); // odświeża CultureInfo w logice pluginu
+            Close();
+        }
 
+        private void BtnSave_Click(object sender, EventArgs e)
+        {
+            SaveAndClose();
+        }
+
+        private void BtnCancel_Click(object sender, EventArgs e)
+        {
             Close();
         }
     }
