@@ -84,7 +84,7 @@ namespace tabsik12.TimeDateSplit
             var langCode = _cmbLanguage.SelectedIndex == 1 ? "en" : "pl";
             PluginConfiguration.SetValue(_plugin, "language", langCode);
 
-            _plugin.ReloadCulture(); // odświeża CultureInfo w logice pluginu
+            _plugin.ReloadCulture();
             Close();
         }
 
